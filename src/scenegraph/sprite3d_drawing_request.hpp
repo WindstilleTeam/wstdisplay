@@ -16,35 +16,38 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "scenegraph/scene_graph.hpp"
+#ifndef HEADER_WINDSTILLE_SPRITE3D_SPRITE3D_DRAWING_REQUEST_HPP
+#define HEADER_WINDSTILLE_SPRITE3D_SPRITE3D_DRAWING_REQUEST_HPP
 
+#include "sprite3d/sprite3d.hpp"
 #include "scenegraph/drawing_request.hpp"
-
-SceneGraph::SceneGraph()
-  : m_drawing_requests()
-{
-}
 
-void
-SceneGraph::add_drawable(boost::shared_ptr<DrawingRequest> drawable)
+class Sprite3DDrawingRequest : public DrawingRequest
 {
-  m_drawing_requests.push_back(drawable);
-}
+private:
+  const Sprite3D* sprite;
 
-void
-SceneGraph::remove_drawable(boost::shared_ptr<DrawingRequest> /*drawable*/)
-{
-  // FIXME: implement me
-}
+public:
+  Sprite3DDrawingRequest(const Sprite3D* sprite_, 
+                         const Vector2f& pos_, float z_pos_, const Matrix& modelview_)
+    : DrawingRequest(pos_, z_pos_, modelview_), sprite(sprite_)
+  {}
 
-void
-SceneGraph::draw(const Texture& tmp_texture, unsigned int mask)
-{
-  for(DrawingRequests::reverse_iterator i = m_drawing_requests.rbegin(); i != m_drawing_requests.rend(); ++i)
+  void draw(const Texture& /*tmp_texture*/)
   {
-    if ((*i)->get_render_mask() & mask)
-      (*i)->draw(tmp_texture);
+    sprite->draw(pos, modelview);
   }
-}
-
+
+  void set_pos(const Vector2f& pos_)
+  {
+    pos = pos_;
+  }
+
+private:
+  Sprite3DDrawingRequest(const Sprite3DDrawingRequest&);
+  Sprite3DDrawingRequest& operator=(const Sprite3DDrawingRequest&);
+};
+
+#endif
+
 /* EOF */
