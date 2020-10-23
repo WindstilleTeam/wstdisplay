@@ -16,25 +16,41 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "scenegraph/scissor_drawable.hpp"
+#ifndef HEADER_WINDSTILLE_DISPLAY_TEXTURE_PACKER_HPP
+#define HEADER_WINDSTILLE_DISPLAY_TEXTURE_PACKER_HPP
 
-#include <iostream>
+#include <vector>
 
-#include "graphics_context.hpp"
+#include <geom/rect.hpp>
+#include <geom/size.hpp>
+#include <surf/fwd.hpp>
 
-ScissorDrawable::ScissorDrawable(const geom::irect& cliprect) :
-  m_cliprect(cliprect), // FIXME: should we keep cliprect in world space instead of screen space?
-  m_drawable_group()
+#include "surface.hpp"
+
+class Texture;
+class TexturePackerTexture;
+
+class TexturePacker
 {
-}
+private:
+  typedef std::vector<TexturePackerTexture*> Textures;
+  geom::isize     texture_size;
+  Textures textures;
 
-void
-ScissorDrawable::render(GraphicsContext& gc, unsigned int mask)
-{
-  std::cout << "Render" << std::endl;
-  gc.push_cliprect(m_cliprect);
-  m_drawable_group.render(gc, mask);
-  gc.pop_cliprect();
-}
+public:
+  TexturePacker(const geom::isize& texture_size);
+  ~TexturePacker();
 
+  SurfacePtr upload(SoftwareSurface const& surface);
+  bool allocate(const geom::isize& size, geom::irect& rect, TexturePtr& out_texture);
+
+  void save_all_as_png() const;
+
+private:
+  TexturePacker(const TexturePacker&);
+  TexturePacker& operator=(const TexturePacker&);
+};
+
+#endif
+
 /* EOF */

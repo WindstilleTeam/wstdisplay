@@ -16,25 +16,18 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "scenegraph/scissor_drawable.hpp"
+#include "color.hpp"
 
-#include <iostream>
+#include <ostream>
 
-#include "graphics_context.hpp"
-
-ScissorDrawable::ScissorDrawable(const geom::irect& cliprect) :
-  m_cliprect(cliprect), // FIXME: should we keep cliprect in world space instead of screen space?
-  m_drawable_group()
+std::ostream& operator<<(std::ostream& out, const RGBAf& color)
 {
-}
-
-void
-ScissorDrawable::render(GraphicsContext& gc, unsigned int mask)
-{
-  std::cout << "Render" << std::endl;
-  gc.push_cliprect(m_cliprect);
-  m_drawable_group.render(gc, mask);
-  gc.pop_cliprect();
+  return out << "RGBAf("
+             << color.r << ", "
+             << color.g << ", "
+             << color.b << ", "
+             << color.a
+             << ")";
 }
 
 /* EOF */

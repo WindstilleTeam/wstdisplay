@@ -16,25 +16,20 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "scenegraph/scissor_drawable.hpp"
+#ifndef HEADER_WINDSTILLE_DISPLAY_SOFTWARE_SURFACE_HPP
+#define HEADER_WINDSTILLE_DISPLAY_SOFTWARE_SURFACE_HPP
 
-#include <iostream>
+#include <filesystem>
+#include <memory>
 
-#include "graphics_context.hpp"
+#include <geom/size.hpp>
+#include <geom/rect.hpp>
+#include <surf/pixel_data.hpp>
 
-ScissorDrawable::ScissorDrawable(const geom::irect& cliprect) :
-  m_cliprect(cliprect), // FIXME: should we keep cliprect in world space instead of screen space?
-  m_drawable_group()
-{
-}
+#include "color.hpp"
 
-void
-ScissorDrawable::render(GraphicsContext& gc, unsigned int mask)
-{
-  std::cout << "Render" << std::endl;
-  gc.push_cliprect(m_cliprect);
-  m_drawable_group.render(gc, mask);
-  gc.pop_cliprect();
-}
+using SoftwareSurface = surf::PixelData;
+
+#endif
 
 /* EOF */

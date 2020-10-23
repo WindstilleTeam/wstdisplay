@@ -16,25 +16,38 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "scenegraph/scissor_drawable.hpp"
+#ifndef HEADER_WINDSTILLE_SCENEGRAPH_DRAWABLE_GROUP_HPP
+#define HEADER_WINDSTILLE_SCENEGRAPH_DRAWABLE_GROUP_HPP
 
-#include <iostream>
+#include <memory>
+#include <vector>
 
-#include "graphics_context.hpp"
+#include <wstdisplay/scenegraph/drawable.hpp>
 
-ScissorDrawable::ScissorDrawable(const geom::irect& cliprect) :
-  m_cliprect(cliprect), // FIXME: should we keep cliprect in world space instead of screen space?
-  m_drawable_group()
+class Texture;
+
+class DrawableGroup : public Drawable
 {
-}
+private:
+  typedef std::vector<std::shared_ptr<Drawable> > Drawables;
+  Drawables m_drawables;
 
-void
-ScissorDrawable::render(GraphicsContext& gc, unsigned int mask)
-{
-  std::cout << "Render" << std::endl;
-  gc.push_cliprect(m_cliprect);
-  m_drawable_group.render(gc, mask);
-  gc.pop_cliprect();
-}
+public:
+  DrawableGroup();
+
+  void add_drawable(std::shared_ptr<Drawable> drawable);
+  void remove_drawable(std::shared_ptr<Drawable> drawable);
+  int  size() const { return static_cast<int>(m_drawables.size()); }
+
+  void clear();
+
+  void render(GraphicsContext& gc, unsigned int mask) override;
+
+private:
+  DrawableGroup(const DrawableGroup&);
+  DrawableGroup& operator=(const DrawableGroup&);
+};
+
+#endif
 
 /* EOF */

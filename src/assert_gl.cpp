@@ -16,25 +16,22 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "scenegraph/scissor_drawable.hpp"
+#include "assert_gl.hpp"
 
-#include <iostream>
+#include <stdexcept>
+#include <sstream>
+#include <GL/glew.h>
 
-#include "graphics_context.hpp"
-
-ScissorDrawable::ScissorDrawable(const geom::irect& cliprect) :
-  m_cliprect(cliprect), // FIXME: should we keep cliprect in world space instead of screen space?
-  m_drawable_group()
+void assert_gl_loc(char const* file, int line, char const* message)
 {
-}
-
-void
-ScissorDrawable::render(GraphicsContext& gc, unsigned int mask)
-{
-  std::cout << "Render" << std::endl;
-  gc.push_cliprect(m_cliprect);
-  m_drawable_group.render(gc, mask);
-  gc.pop_cliprect();
+  GLenum error = glGetError();
+  if(error != GL_NO_ERROR)
+  {
+    std::ostringstream msg;
+    msg << file << ":" << line << ": OpenGLError while '" << (message ? message : "<null>") << "': "
+        << gluErrorString(error);
+    throw std::runtime_error(msg.str());
+  }
 }
 
 /* EOF */

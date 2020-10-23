@@ -16,25 +16,33 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "scenegraph/scissor_drawable.hpp"
+#ifndef HEADER_WINDSTILLE_SHADER_DRAWABLE_HPP
+#define HEADER_WINDSTILLE_SHADER_DRAWABLE_HPP
 
-#include <iostream>
+#include <wstdisplay/shader_program.hpp>
+#include <wstdisplay/scenegraph/drawable_group.hpp>
+#include <wstdisplay/scenegraph/drawable.hpp>
 
-#include "graphics_context.hpp"
-
-ScissorDrawable::ScissorDrawable(const geom::irect& cliprect) :
-  m_cliprect(cliprect), // FIXME: should we keep cliprect in world space instead of screen space?
-  m_drawable_group()
+class ShaderDrawable : public Drawable
 {
-}
+private:
+  ShaderProgramPtr m_shader;
+  DrawableGroup m_drawables;
 
-void
-ScissorDrawable::render(GraphicsContext& gc, unsigned int mask)
-{
-  std::cout << "Render" << std::endl;
-  gc.push_cliprect(m_cliprect);
-  m_drawable_group.render(gc, mask);
-  gc.pop_cliprect();
-}
+public:
+  ShaderDrawable();
+
+  void render(GraphicsContext& gc, unsigned int mask) override;
+
+  void set_shader(ShaderProgramPtr shader) { m_shader = shader; }
+  ShaderProgramPtr get_shader() { return m_shader; }
+  DrawableGroup& get_drawable_group() { return m_drawables; }
+
+private:
+  ShaderDrawable(const ShaderDrawable&);
+  ShaderDrawable& operator=(const ShaderDrawable&);
+};
+
+#endif
 
 /* EOF */
